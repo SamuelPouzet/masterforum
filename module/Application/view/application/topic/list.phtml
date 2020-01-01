@@ -1,0 +1,37 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Sam
+ * Date: 27/12/2019
+ * Time: 16:43
+ */
+?>
+
+<h1>Elements du topic</h1>
+
+<ul>
+    <?php foreach($topic->getSubjects() as $subject): ?>
+
+    <li>
+        <a href="<?= $this->url('forums/subject', ['id_forum'=>$topic->getForum()->getId(), 'id'=>$subject->getId() ]);?>">
+        <?= $subject->getName(); ?>
+        </a>
+    </li>
+
+    <?php endforeach; ?>
+</ul>
+
+<?= $this->form()->openTag($form); ?>
+
+    <div class="form-group">
+        <?= $this->formLabel($form->get('name')); ?>
+        <?= $this->formElement($form->get('name')); ?>
+        <?= $this->formElementErrors($form->get('name')); ?>
+    </div>
+
+
+<?= $this->formElement($form->get('csrf')); ?>
+
+<?= $this->formElement($form->get('submit')); ?>
+
+<?= $this->form()->closeTag(); ?>

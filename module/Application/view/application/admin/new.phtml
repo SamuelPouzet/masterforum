@@ -1,0 +1,24 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Sam
+ * Date: 27/12/2019
+ * Time: 23:17
+ */
+
+?>
+
+<?= $this->form()->openTag($form); ?>
+
+    <div class="form-group">
+        <?= $this->formLabel($form->get('name')); ?>
+        <?= $this->formElement($form->get('name')); ?>
+        <?= $this->formElementErrors($form->get('name')); ?>
+    </div>
+
+
+<?= $this->formElement($form->get('csrf')); ?>
+
+<?= $this->formElement($form->get('submit')); ?>
+
+<?= $this->form()->closeTag(); ?>

@@ -1,0 +1,33 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Sam
+ * Date: 27/12/2019
+ * Time: 16:43
+ */
+?>
+
+<h1>Elements du sujet</h1>
+
+<ul>
+    <?php foreach($subject->getPosts() as $post): ?>
+
+    <li><?= $post->getContent(); ?></li>
+
+    <?php endforeach; ?>
+</ul>
+
+<?= $this->form()->openTag($form); ?>
+
+<div class="form-group">
+    <?= $this->formLabel($form->get('content')); ?>
+    <?= $this->formElement($form->get('content')); ?>
+    <?= $this->formElementErrors($form->get('content')); ?>
+</div>
+
+
+<?= $this->formElement($form->get('csrf')); ?>
+
+<?= $this->formElement($form->get('submit')); ?>
+
+<?= $this->form()->closeTag(); ?>

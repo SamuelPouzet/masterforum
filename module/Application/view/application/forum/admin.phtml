@@ -1,0 +1,73 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Sam
+ * Date: 01/01/2020
+ * Time: 11:51
+ */
+?>
+
+<h1>Elements du forum</h1>
+<ul>
+    <?php foreach($classes as $class): ?>
+    <li>
+        <?= $class->getName(); ?>
+        <ul>
+            <?php foreach($class->getAttributes() as $attr):?>
+                <li data-ref="<?= $attr->getId(); ?>">
+                    <span class="name"><?= $attr->getName(); ?> :</span>
+                    <span class="attribute"><?= $attr->getAttribute(); ?></span>
+                    <span class="addendum"><?= $attr->getAddendum(); ?></span>
+                    <span class="hidden"><input  class="nameInput" type="text" name="name" value="<?= $attr->getName(); ?>">:</span>
+                    <span class="hidden"><input  class="attributeInput" type="text" name="attribute" value="<?= $attr->getAttribute(); ?>"></span>
+                    <span class="hidden"><input  class="addendumInput" type="text" name="addendum" value="<?= $attr->getAddendum(); ?>"></span>
+
+                <button class="btn btn-warning update" data-ref="<?= $attr->getId()?>">Update</button>
+                <button class="btn btn-warning hidden enreg" data-ref="<?= $attr->getId()?>">Enregistrer</button>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </li>
+    <?php endforeach; ?>
+</ul>
+
+<?= $this->form()->openTag($form); ?>
+
+<div class="form-group">
+    <?= $this->formLabel($form->get('name')); ?>
+    <?= $this->formElement($form->get('name')); ?>
+    <?= $this->formElementErrors($form->get('name')); ?>
+</div>
+
+<div class="form-group">
+    <?= $this->formLabel($form->get('type')); ?>
+    <?= $this->formElement($form->get('type')); ?>
+    <?= $this->formElementErrors($form->get('type')); ?>
+</div>
+
+<?= $this->formElement($form->get('csrf')); ?>
+
+<?= $this->formElement($form->get('submit')); ?>
+
+<?= $this->form()->closeTag(); ?>
+
+<script>
+    $( document ).ready(function(){
+        $(".update").on('click', function(){
+            $( this ).parent().children().toggle();
+        });
+
+        $(".enreg").on("click", function(){
+            var name = $( this ).parent().find(".nameInput").val();
+            var attribute = $( this ).parent().find(".attributeInput").val();
+            var addendum = $( this ).parent().find(".addendumInput").val();
+            var class_id = $( this ).parent().data('ref');
+            console.log(class_id);
+
+            $.post(<?= $this->url("forums", ['action'=>'ajaxUpdateCssAttribute']); ?>, {name: name, attribute: attribute, addendum: addendum, class_id: class_id},function(){
+                alert( "success" );
+            });
+        });
+    });
+</script>
+
