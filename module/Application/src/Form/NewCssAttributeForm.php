@@ -17,10 +17,15 @@ use Zend\Form\Form;
 
 class NewCssAttributeForm extends Form
 {
+
+    protected $scenario;
+
     public function __construct($scenario = 'create', $entityManager = null, $role = null)
     {
         // Define form name
         parent::__construct('newCssAttribute-form');
+
+        $this->scenario = $scenario;
 
         // Set POST method for this form
         $this->setAttribute('method', 'post');
@@ -69,16 +74,32 @@ class NewCssAttributeForm extends Form
         ]);
 
 
-        $this->add([
-            'type'  => Number::class,
-            'name' => 'class_id',
-            'attributes' => [
-                'id' => 'class_id'
-            ],
-            'options' => [
-                'label' => 'class_id',
-            ],
-        ]);
+        if($this->scenario == "create"){
+            //i need class into create
+            $this->add([
+                'type'  => Number::class,
+                'name' => 'class_id',
+                'attributes' => [
+                    'id' => 'class_id'
+                ],
+                'options' => [
+                    'label' => 'class_id',
+                ],
+            ]);
+        }else{
+            //if it's an update I've the attr_id to update
+            $this->add([
+                'type'  => Number::class,
+                'name' => 'attr_id',
+                'attributes' => [
+                    'id' => 'attr_id'
+                ],
+                'options' => [
+                    'label' => 'attr_id',
+                ],
+            ]);
+        }
+
 
 
         // Add the Submit button
@@ -91,15 +112,6 @@ class NewCssAttributeForm extends Form
             ],
         ]);
 
-        $this->add([
-            'type' => Csrf::class,
-            'name' => 'csrf',
-            'options' => [
-                'csrf_options' => [
-                    'timeout' => 600
-                ]
-            ]
-        ]);
     }
 
     protected function addInputFilters()

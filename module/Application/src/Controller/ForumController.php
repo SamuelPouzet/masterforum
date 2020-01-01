@@ -16,7 +16,9 @@ use Application\Form\NewCssAttributeForm;
 use Application\Form\NewCssClassForm;
 use Application\Service\CssManager;
 use Doctrine\ORM\EntityManager;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Zend\View\Strategy\JsonStrategy;
 
 class ForumController extends BaseController
 {
@@ -84,21 +86,51 @@ class ForumController extends BaseController
         ]);
     }
 
-    public function ajaxUpdateCssAttribute()
+    public function ajaxNewCssAttributeAction()
     {
         $form = new NewCssAttributeForm();
 
-        if($this->getRequest()->isXmlHttpRequest()){
+        if($this->getRequest()->isPost()){
             $request = $this->params()->fromPost();
             $form->setData($request);
+            if($form->isValid()){
+                $data = $form->getData();
 
+                $this->cssManager->newAttribute($data);
+            }
+        }
+
+        return new JsonModel([]);
+    }
+
+    public function ajaxUpdateCssAttributeAction()
+    {
+        $form = new NewCssAttributeForm('update');
+
+        if($this->getRequest()->isPost()){
+            $request = $this->params()->fromPost();
+            $form->setData($request);
+            //die(var_dump($form->isValid()));
             if($form->isValid()){
                 $data = $form->getData();
 
                 $this->cssManager->updAttribute($data);
-                //$this->redirect()->toRoute('communication');
             }
         }
+
+        return new JsonModel([]);
+    }
+
+    public function ajaxDeleteCssAttributeAction()
+    {
+
+        if($this->getRequest()->isPost()){
+            $request = $this->params()->fromPost();
+
+            $this->cssManager->deleteAttribute($request);
+            }
+
+        return new JsonModel([]);
     }
 
 

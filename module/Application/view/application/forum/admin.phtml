@@ -23,9 +23,17 @@
                     <span class="hidden"><input  class="addendumInput" type="text" name="addendum" value="<?= $attr->getAddendum(); ?>"></span>
 
                 <button class="btn btn-warning update" data-ref="<?= $attr->getId()?>">Update</button>
+                <button class="btn btn-error delete" data-ref="<?= $attr->getId()?>">Delete</button>
                 <button class="btn btn-warning hidden enreg" data-ref="<?= $attr->getId()?>">Enregistrer</button>
                 </li>
             <?php endforeach; ?>
+            <li data-ref="<?= $class->getId(); ?>">
+                <span class="name"><input  class="nameInput" type="text" name="name" >:</span>
+                <span class="attribute"><input  class="attributeInput" type="text" name="attribute" ></span>
+                <span class="addendum"><input  class="addendumInput" type="text" name="addendum"></span>
+
+                <button class="btn btn-warning enregNew">Nouveau</button>
+            </li>
         </ul>
     </li>
     <?php endforeach; ?>
@@ -61,12 +69,39 @@
             var name = $( this ).parent().find(".nameInput").val();
             var attribute = $( this ).parent().find(".attributeInput").val();
             var addendum = $( this ).parent().find(".addendumInput").val();
-            var class_id = $( this ).parent().data('ref');
-            console.log(class_id);
+            var attr_id = $( this ).parent().data('ref');
 
-            $.post(<?= $this->url("forums", ['action'=>'ajaxUpdateCssAttribute']); ?>, {name: name, attribute: attribute, addendum: addendum, class_id: class_id},function(){
+            $.post('<?= $this->url("forums/forum", ['action'=>'ajaxUpdateCssAttribute', 'id_forum'=>$forum->getid()]); ?>', {name: name, attribute: attribute, addendum: addendum, attr_id: attr_id},function(){
                 alert( "success" );
             });
+        });
+
+        $(".enregNew").on("click", function() {
+            var name = $(this).parent().find(".nameInput").val();
+            var attribute = $(this).parent().find(".attributeInput").val();
+            var addendum = $(this).parent().find(".addendumInput").val();
+            var class_id = $(this).parent().data('ref');
+
+            $.post('<?= $this->url("forums/forum", ['action' => 'ajaxNewCssAttribute', 'id_forum' => $forum->getid()]); ?>', {
+                name: name,
+                attribute: attribute,
+                addendum: addendum,
+                class_id: class_id
+            }, function () {
+                alert("success");
+            });
+        });
+
+        $(".delete").on("click", function() {
+            var class_id = $(this).data('ref');
+
+            if(confirm('êtes cous certains de vouloir supprimer cet élément?')){
+                $.post('<?= $this->url("forums/forum", ['action' => 'ajaxDeleteCssAttribute', 'id_forum' => $forum->getid()]); ?>', {
+                    class_id: class_id,
+                }, function () {
+                    alert("success");
+                });
+            }
         });
     });
 </script>

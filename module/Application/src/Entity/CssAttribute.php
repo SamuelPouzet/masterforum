@@ -19,7 +19,7 @@ class CssAttribute
 {
     /**
      * @ORM\Id
-     * ORM\GeneratedValue
+     * @ORM\GeneratedValue
      * @ORM\Column(name="id")
      */
     protected $id;
