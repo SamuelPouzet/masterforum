@@ -9,14 +9,13 @@
 
 <h1>Elements du forum</h1>
 
-<ul>
     <?php foreach($forum->getTopics() as $topic): ?>
-
-        <li>
-            <a href="<?= $this->url('forums/topic', ['id_forum'=>$topic->getForum()->getId(), 'id'=>$topic->getId() ]);?>">
-                <?= $topic->getName(); ?>
-            </a>
-        </li>
-
+        <div class="card">
+            <div class="card-body">
+                <a href="<?= $this->url('forums/topic', ['id_forum'=>$topic->getForum()->getId(), 'id'=>$topic->getId() ]);?>">
+                    <?= $topic->getName(); ?>
+                </a>
+            </div>
+        </div>
     <?php endforeach; ?>
-</ul>
+

@@ -9,13 +9,24 @@
 
 <h1>Elements du sujet</h1>
 
-<ul>
     <?php foreach($subject->getPosts() as $post): ?>
 
-    <li><?= $post->getContent(); ?></li>
-
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <p class="card-text">Ici se trouveront les informations sur l'utilisateur</p>
+                    </div>
+                    <div class="col-lg-9">
+                        <p class="card-text"><?= $post->getContent(); ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <?= $post->getDateCreate()->format('d/m/Y \à H:i'); ?>
+            </div>
+        </div>
     <?php endforeach; ?>
-</ul>
 
 <?= $this->form()->openTag($form); ?>
 

@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * This class represents a registered user.
- * @ORM\Entity(repositoryClass="\User\Repository\UserRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="user")
  */
 class User 
@@ -211,7 +211,7 @@ class User
      * Returns password reset token.
      * @return string
      */
-    public function getPasswordResetToken()
+    public function getResetPasswordToken()
     {
         return $this->passwordResetToken;
     }

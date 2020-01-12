@@ -1,6 +1,8 @@
 <?php
 namespace User;
 
+use User\Service\Factory\RbacManagerFactory;
+use User\Service\RbacManager;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -45,16 +47,6 @@ return [
                     'defaults' => [
                         'controller' => Controller\UserController::class,
                         'action'     => 'resetPassword',
-                    ],
-                ],
-            ],
-            'set-password' => [
-                'type' => Literal::class,
-                'options' => [
-                    'route'    => '/set-password',
-                    'defaults' => [
-                        'controller' => Controller\UserController::class,
-                        'action'     => 'setPassword',
                     ],
                 ],
             ],
@@ -151,6 +143,7 @@ return [
             Service\RbacManager::class => Service\Factory\RbacManagerFactory::class,
             Service\RoleManager::class => Service\Factory\RoleManagerFactory::class,
             Service\UserManager::class => Service\Factory\UserManagerFactory::class,
+            //RbacManager::class => RbacManagerFactory::class,
         ],
     ],
     'view_manager' => [

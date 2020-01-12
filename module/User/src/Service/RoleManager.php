@@ -109,6 +109,7 @@ class RoleManager
             }
         }
 
+        $this->entityManager->persist($role);
         $this->entityManager->flush();
         
         // Reload RBAC container.

@@ -3,10 +3,6 @@ namespace User\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Zend\Paginator\Paginator;
-use Application\Entity\Post;
 use User\Entity\User;
 use User\Entity\Role;
 use User\Form\UserForm;
@@ -52,16 +48,11 @@ class UserController extends AbstractActionController
             return;
         }
         
-        $query = $this->entityManager->getRepository(User::class)
-                ->findAllUsers();
+        $users = $this->entityManager->getRepository(User::class)
+                ->findBy([], ['id'=>'ASC']);
         
-        $adapter = new DoctrineAdapter(new ORMPaginator($query, false));
-        $paginator = new Paginator($adapter);
-        $paginator->setDefaultItemCountPerPage(3);        
-        $paginator->setCurrentPageNumber($page);
-         	         
         return new ViewModel([
-            'users' => $paginator
+            'users' => $users
         ]);
     } 
     
@@ -288,8 +279,8 @@ class UserController extends AbstractActionController
                 
                 // Look for the user with such email.
                 $user = $this->entityManager->getRepository(User::class)
-                        ->findOneByEmail($data['email']);
-                if ($user!=null && $user->getStatus() == User::STATUS_ACTIVE) {             
+                        ->findOneByEmail($data['email']);                
+                if ($user!=null) {
                     // Generate a new password for user and send an E-mail 
                     // notification about that.
                     $this->userManager->generatePasswordResetToken($user);
@@ -333,7 +324,6 @@ class UserController extends AbstractActionController
      */
     public function setPasswordAction()
     {
-        $email = $this->params()->fromQuery('email', null);
         $token = $this->params()->fromQuery('token', null);
         
         // Validate token length
@@ -342,7 +332,7 @@ class UserController extends AbstractActionController
         }
         
         if($token===null || 
-           !$this->userManager->validatePasswordResetToken($email, $token)) {
+           !$this->userManager->validatePasswordResetToken($token)) {
             return $this->redirect()->toRoute('users', 
                     ['action'=>'message', 'id'=>'failed']);
         }
@@ -364,7 +354,7 @@ class UserController extends AbstractActionController
                 $data = $form->getData();
                                                
                 // Set new password for the user.
-                if ($this->userManager->setNewPasswordByToken($email, $token, $data['new_password'])) {
+                if ($this->userManager->setNewPasswordByToken($token, $data['new_password'])) {
                     
                     // Redirect to "message" page
                     return $this->redirect()->toRoute('users', 

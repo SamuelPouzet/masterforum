@@ -90,7 +90,10 @@ class Posts
      */
     public function getDateCreate()
     {
-        return $this->date_create;
+        if($this->date_create) {
+            return new \DateTime($this->date_create);
+        }
+        return null;
     }
 
     /**

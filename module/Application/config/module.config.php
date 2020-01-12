@@ -22,13 +22,17 @@ use Application\Controller\TopicController;
 use Application\Service\CssManager;
 use Application\Service\Factory\CssManagerFactory;
 use Application\Service\Factory\ForumManagerFactory;
+use Application\Service\Factory\NavManagerFactory;
 use Application\Service\Factory\PostManagerFactory;
 use Application\Service\Factory\SubjectManagerFactory;
 use Application\Service\Factory\TopicManagerFactory;
 use Application\Service\ForumManager;
+use Application\Service\NavManager;
 use Application\Service\PostManager;
 use Application\Service\SubjectManager;
 use Application\Service\TopicManager;
+use Application\View\Helper\BreadCrumbsHelper;
+use Application\View\Helper\Factory\BreadCrumbsHelperFactory;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
@@ -127,12 +131,26 @@ return [
             SubjectManager::class=>SubjectManagerFactory::class,
             ForumManager::class=>ForumManagerFactory::class,
             CssManager::class=>CssManagerFactory::class,
+            NavManager::class=>NavManagerFactory::class,
         ],
     ],
     'access_filter' => [
         'controllers' => [
-
+            ForumController::class => [
+                ['actions' => ['list'], 'allow' => '*'],
+            ],
         ]
+
+    ],
+    'view_helpers' => [
+        'factories' => [
+            View\Helper\MenuHelper::class => View\Helper\Factory\MenuHelperFactory::class,
+            BreadCrumbsHelper::class => BreadCrumbsHelperFactory::class,
+        ],
+        'aliases' => [
+            'mainMenu' => View\Helper\MenuHelper::class,
+            'breadCrumbs' => BreadCrumbsHelper::class,
+        ],
     ],
     'view_manager' => [
         'display_not_found_reason' => true,
