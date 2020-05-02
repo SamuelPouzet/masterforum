@@ -7,7 +7,8 @@
 
 namespace Application;
 
-use Application\Controller\AdminController;
+use Application\Controller\LocalAdminController;
+use Application\Controller\Factory\LocalAdminControllerFactory;
 use Application\Controller\CssGeneratorController;
 use Application\Controller\CssGeneratorControlller;
 use Application\Controller\Factory\CssGeneratorControllerFactory;
@@ -51,10 +52,23 @@ return [
                     ],
                 ],
             ],
+            'admin'=>[
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/administration[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => AdminController::class,
+                        'action'     => 'list',
+                    ],
+                ],
+            ],
             'forums' => [
                 'type'    => Segment::class,
                 'options' => [
                     'route'    => '/:id_forum',
+                ],
+                'constraints' => [
+                    'id_forum' => '[0-9]*',
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
@@ -98,26 +112,25 @@ return [
                             ],
                         ],
                     ],
-
-                ],
-            ],
-            'admin'=>[
-                'type'    => Segment::class,
-                'options' => [
-                    'route'    => '/administration[/:action[/:id]]',
-                    'defaults' => [
-                        'controller' => AdminController::class,
-                        'action'     => 'list',
+                    'forum_admin'=>[
+                        'type'    => Segment::class,
+                        'options' => [
+                            'route'    => '/administration[/:action[/:id]]',
+                            'defaults' => [
+                                'controller' => LocalAdminController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
                     ],
+
                 ],
             ],
-
         ],
     ],
     'controllers' => [
         'factories' => [
             IndexController::class=>InvokableFactory::class,
-            AdminController::class => AdminControllerFactory::class,
+            LocalAdminController::class => LocalAdminControllerFactory::class,
             ForumController::class=>ForumControllerFactory::class,
             TopicController::class=>TopicControllerFactory::class,
             SubjectController::class=>SubjectControllerFactory::class,
@@ -137,10 +150,25 @@ return [
     'access_filter' => [
         'controllers' => [
             ForumController::class => [
-                ['actions' => ['list'], 'allow' => '*'],
+                ['actions' => ['list'], 'allow' => '@'],
+            ],
+            TopicController::class => [
+                ['actions' => ['list'], 'allow' => '@'],
+            ],
+            SubjectController::class => [
+                ['actions' => ['list'], 'allow' => '@'],
+            ],
+            CssGeneratorController::class => [
+                ['actions' => ['show'], 'allow' => '*'],
+                ['actions' => ['edit', 'ajaxgetclass', 'ajaxgetattribute', 'ajaxremoveattribute', 'ajaxremoveclass'], 'allow' => '@'],
+            ],
+            LocalAdminController::class => [
+                [
+                    'actions' => ['index', 'list'],
+                    'allow' => '@'
+                ],
             ],
         ]
-
     ],
     'view_helpers' => [
         'factories' => [

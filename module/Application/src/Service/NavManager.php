@@ -70,18 +70,13 @@ class NavManager
         ];
 
         $items[] = [
-            'id' => 'myself',
+            'id' => 'profile',
             'label' => $this->authService->getIdentity(),
             'dropdown' => [
                 [
-                    'id' => 'about',
-                    'label' => 'Qui suis je?',
-                    'link' => "#"
-                ],
-                [
-                    'id' => 'folio',
-                    'label' => 'Mes créations',
-                    'link' => "#"
+                    'id' => 'logout',
+                    'label' => 'Déconnexion',
+                    'link' =>  $url('logout'),
                 ],
             ]
         ];

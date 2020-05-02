@@ -40,7 +40,7 @@ class NewCssClassForm extends Form
             'type'  => Text::class,
             'name' => 'name',
             'attributes' => [
-                'id' => 'name'
+                'id' => 'class-name'
             ],
             'options' => [
                 'label' => 'Nom',
@@ -51,7 +51,7 @@ class NewCssClassForm extends Form
             'type'  => Select::class,
             'name' => 'type',
             'attributes' => [
-                'id' => 'type',
+                'id' => 'class-type',
             ],
             'options' => [
                 'label' => 'Type',
@@ -66,7 +66,7 @@ class NewCssClassForm extends Form
         // Add the Submit button
         $this->add([
             'type'  => Submit::class,
-            'name' => 'submit',
+            'name' => 'submit-class',
             'attributes' => [
                 'value' => 'Enregistrer',
                 'id' => 'submit',

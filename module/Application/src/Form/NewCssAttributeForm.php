@@ -10,6 +10,7 @@ namespace Application\Form;
 
 
 use Zend\Form\Element\Csrf;
+use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Number;
 use Zend\Form\Element\Submit;
 use Zend\Form\Element\Text;
@@ -41,10 +42,26 @@ class NewCssAttributeForm extends Form
     protected function addElements()
     {
         $this->add([
+            'type'  => Hidden::class,
+            'name' => 'id',
+            'attributes' => [
+                'id' => 'attr-id'
+            ]
+        ]);
+
+        $this->add([
+            'type'  => Hidden::class,
+            'name' => 'class_id',
+            'attributes' => [
+                'id' => 'attr-class-id'
+            ]
+        ]);
+
+        $this->add([
             'type'  => Text::class,
             'name' => 'name',
             'attributes' => [
-                'id' => 'name'
+                'id' => 'attr-name'
             ],
             'options' => [
                 'label' => 'Nom',
@@ -55,7 +72,7 @@ class NewCssAttributeForm extends Form
             'type'  => Text::class,
             'name' => 'attribute',
             'attributes' => [
-                'id' => 'attribute'
+                'id' => 'attr-attribute'
             ],
             'options' => [
                 'label' => 'Attribut',
@@ -66,46 +83,17 @@ class NewCssAttributeForm extends Form
             'type'  => Text::class,
             'name' => 'addendum',
             'attributes' => [
-                'id' => 'addendum'
+                'id' => 'attr-addendum'
             ],
             'options' => [
                 'label' => 'Addendum',
             ],
         ]);
 
-
-        if($this->scenario == "create"){
-            //i need class into create
-            $this->add([
-                'type'  => Number::class,
-                'name' => 'class_id',
-                'attributes' => [
-                    'id' => 'class_id'
-                ],
-                'options' => [
-                    'label' => 'class_id',
-                ],
-            ]);
-        }else{
-            //if it's an update I've the attr_id to update
-            $this->add([
-                'type'  => Number::class,
-                'name' => 'attr_id',
-                'attributes' => [
-                    'id' => 'attr_id'
-                ],
-                'options' => [
-                    'label' => 'attr_id',
-                ],
-            ]);
-        }
-
-
-
         // Add the Submit button
         $this->add([
             'type'  => Submit::class,
-            'name' => 'submit',
+            'name' => 'submit-attr',
             'attributes' => [
                 'value' => 'Enregistrer',
                 'id' => 'submit',

@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="css_class")
  */
-class CssClass
+class CssClass implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -48,6 +48,11 @@ class CssClass
     public function __construct()
     {
         $this->attributes = new ArrayCollection();
+    }
+
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 
     /**

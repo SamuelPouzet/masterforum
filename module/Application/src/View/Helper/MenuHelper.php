@@ -64,22 +64,13 @@ class MenuHelper extends AbstractHelper
             return ''; // Do nothing if there are no items.
         }
 
-        $result = '<div class="collapse navbar-collapse navbar-right navbar-main-collapse">';
-        $result .= '<ul class="nav navbar-nav ml-auto">';
+        $result = '<div class="collapse navbar-collapse" id="navbarResponsive">';
+        $result .= '<ul class="navbar-nav ml-auto">';
 
 
         // Render items
         foreach ($this->items as $item) {
             if(!isset($item['float']) || $item['float']=='left')
-                $result .= $this->renderItem($item);
-        }
-
-        $result .= '</ul>';
-        $result .= '<ul class="nav navbar-nav navbar-right">';
-
-        // Render items
-        foreach ($this->items as $item) {
-            if(isset($item['float']) && $item['float']=='right')
                 $result .= $this->renderItem($item);
         }
 
@@ -109,16 +100,16 @@ class MenuHelper extends AbstractHelper
 
             $dropdownItems = $item['dropdown'];
 
-            $result .= '<li class="nav-item dropdown ' . ($isActive?'active':'') . '">' . "\r\n";
-            $result .= '<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbardropdown' . $id . '"  aria-haspopup="true" aria-expanded="false">';
-            $result .= $escapeHtml($label) . ' <b class="caret"></b>' . "\r\n";
+            $result .= '<li class="nav-item dropdown ' . ($isActive?'active':'') . '">';
+            $result .= '<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dropdownMenu' . $id . '">';
+            $result .= $label;
             $result .= '</a>';
 
-            $result .= '<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbardropdown' . $id . '">';
+            $result .= '<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu' . $id . '">';
             foreach ($dropdownItems as $item) {
                 $link = isset($item['link']) ? $item['link'] : '#';
-                $label = isset($item['label']) ? $item['label'] : '';
-                $result .= '<a class="dropdown-item" href="'.$escapeHtml($link).'">'.$escapeHtml($label).'</a>'  . "\r\n";
+                $label = isset($item['label']) ? $item['label'] : '---';
+                $result .= '<a class="dropdown-item" href="'.$link.'">'.$label.'</a>';
             }
             $result .= '</div>';
             $result .= '</li>';

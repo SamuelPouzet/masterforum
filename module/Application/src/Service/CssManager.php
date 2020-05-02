@@ -12,11 +12,16 @@ namespace Application\Service;
 use Application\Entity\CssAttribute;
 use Application\Entity\CssClass;
 use Application\Entity\Forum;
+use Doctrine\Common\Annotations\Annotation\Attribute;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManager;
 
 class CssManager
 {
+
+    const DISPATCH_ATTR = 1;
+    const DISPATCH_CLASS = 2;
+
     protected $entityManager;
 
     public function __construct(EntityManager $em)
@@ -24,9 +29,24 @@ class CssManager
         $this->entityManager = $em;
     }
 
-    public function addClass(array $data, Forum $forum)
+    public function dispatch($dispatch, $data, $forum)
     {
+        switch($dispatch)
+        {
+            case self::DISPATCH_ATTR:
+                $this->updAttribute($data);
+                break;
+            case self::DISPATCH_CLASS:
+                $this->updClass($data, $forum);
+                break;
+            default:
+                throw new \Exception('dispatcher en vrac');
 
+        }
+    }
+
+    public function updClass(array $data, Forum $forum)
+    {
         $entity = new CssClass();
         $entity->setName($data['name']);
         $entity->setForumId($forum->getId());
@@ -37,41 +57,40 @@ class CssManager
 
     }
 
-    public function newAttribute(array $data)
-    {
-        //die(var_dump($data));
-        $entity = new CssAttribute();
-        $class = $this->entityManager->getRepository(CssClass::class)->find($data['class_id']);
-        $entity->setName($data['name']);
-        $entity->setAttribute($data['attribute']);
-        $entity->setAddendum($data['addendum']);
-        $entity->setClass($class);
-        $entity->setClassId($class->getId());
-//die(Debug::dump($entity));
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-    }
 
     public function updAttribute(array $data)
     {
-        //die(var_dump($data));
-        $entity = $this->entityManager->getRepository(CssAttribute::class)->find($data['attr_id']);
+        if(!isset($data['id'])){
+            $data['id'] = 0;
+        }
+        $entity = $this->entityManager->getRepository(CssAttribute::class)->find($data['id']);
+        if(!$entity){
+            $entity = new CssAttribute();
+        }
         $entity->setName($data['name']);
         $entity->setAttribute($data['attribute']);
         $entity->setAddendum($data['addendum']);
+        $class = $this->entityManager->getRepository(CssClass::class)->find($data['class_id']);
+        if(!$class){
+            throw new \Exception('Vous essayez d\'enregistrer un attribut dans une classe inexistante');
+        }
+        $entity->setClass($class);
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
     }
 
-    public function deleteAttribute(array $data)
+    public function deleteAttribute(CssAttribute $attr)
     {
-        $entity = $this->entityManager->getRepository(CssAttribute::class)->find($data['class_id']);
-        $this->entityManager->remove($entity);
+        $this->entityManager->remove($attr);
         $this->entityManager->flush();
+    }
 
+    public function deleteClass(CssClass $class)
+    {
+        $this->entityManager->remove($class);
+        $this->entityManager->flush();
     }
 
 }

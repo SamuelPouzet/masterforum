@@ -1,0 +1,209 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Sam
+ * Date: 28/12/2019
+ * Time: 13:32
+ */
+?>
+<div class="jumbotron">
+    <p><a class="btn btn-warning btn-xs btn-new-class">Nouvelle classe</a></p>
+<?php foreach($classes as $class): ?>
+<ul>
+    <li><?= $class->getName(); ?>
+        <a class="btn btn-info btn-xs btn-edit-class" data_class="<?= $class->getId() ?>"></a>
+        <a class="btn btn-warning btn-xs btn-delete-class" data_class="<?= $class->getId() ?>"></a>
+    </li>
+    <ul>
+        <?php foreach($class->getAttributes() as $attr):?>
+            <li><?= $attr->getName(); ?>: <?= $attr->getAttribute(); ?>
+                <a class="btn btn-info btn-xs btn-edit-attribute" data_class="<?= $class->getId() ?>" data_attr="<?= $attr->getId(); ?>"></a>
+                <a class="btn btn-warning btn-xs btn-delete-attribute" data_attr="<?= $attr->getId() ?>"></a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+    <p><a class="btn btn-info btn-xs btn-new-attribute" data_attr="<?= $attr->getId() ?>">Nouvel attribut</a></p>
+</ul>
+<?php endforeach; ?>
+</div>
+
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="modal-attr" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <?= $this->form()->openTag($this->form_attr); ?>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="modal-attr-title"></h4>
+                </div>
+                <div class="modal-body" id="modal-attr-body">
+
+
+                    <div class="form-group">
+                        <?= $this->formElement($this->form_attr->get('id')); ?>
+                        <?= $this->formElement($this->form_attr->get('class_id')); ?>
+                    </div>
+
+                    <div class="form-group">
+                        <?= $this->formLabel($this->form_attr->get('name')); ?>
+                        <?= $this->formElement($this->form_attr->get('name')); ?>
+                        <?= $this->formElementErrors($this->form_attr->get('name')); ?>
+                    </div>
+
+                    <div class="form-group">
+                        <?= $this->formLabel($this->form_attr->get('attribute')); ?>
+                        <?= $this->formElement($this->form_attr->get('attribute')); ?>
+                        <?= $this->formElementErrors($this->form_attr->get('attribute')); ?>
+                    </div>
+
+                    <div class="form-group">
+                        <?= $this->formLabel($this->form_attr->get('addendum')); ?>
+                        <?= $this->formElement($this->form_attr->get('addendum')); ?>
+                        <?= $this->formElementErrors($this->form_attr->get('addendum')); ?>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <?= $this->formElement($this->form_attr->get('submit-attr')); ?>
+                </div>
+                <?= $this->form()->closeTag(); ?>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="modal-class" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <?= $this->form()->openTag($this->form_class); ?>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="modal-class-title"></h4>
+                </div>
+                <div class="modal-body" id="modal-class-body">
+
+                    <div class="form-group">
+                        <?= $this->formLabel($this->form_class->get('name')); ?>
+                        <?= $this->formElement($this->form_class->get('name')); ?>
+                        <?= $this->formElementErrors($this->form_class->get('name')); ?>
+                    </div>
+
+                    <div class="form-group">
+                        <?= $this->formLabel($this->form_class->get('type')); ?>
+                        <?= $this->formElement($this->form_class->get('type')); ?>
+                        <?= $this->formElementErrors($this->form_class->get('type')); ?>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <?= $this->formElement($this->form_class->get('csrf')); ?>
+                    <?= $this->formElement($this->form_class->get('submit-class')); ?>
+                </div>
+                <?= $this->form()->closeTag(); ?>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    $('.btn-new-class').on('click', function(){
+        $("#modal-class").modal('show');
+    });
+
+    $('.btn-delete-attribute').on('click', function(){
+
+        var id = $( this ).attr('data_attr');
+        $.post( "<?= $this->url('forums/css_generator', ['action' => 'ajaxremoveattribute', 'id_forum'=>$this->id_forum]) ?>", { 'id_attribute': id})
+            .done(function(data) {
+                $( this ).remove();
+            })
+            .fail(function(data){
+                console.log(data);
+            })
+        ;
+
+    });
+
+    $('.btn-delete-class').on('click', function(){
+
+        var id = $( this ).attr('data_class');
+        $.post( "<?= $this->url('forums/css_generator', ['action' => 'ajaxremoveclass', 'id_forum'=>$this->id_forum]) ?>", { 'id_class': id})
+            .done(function(data) {
+                $( this ).remove();
+            })
+            .fail(function(data){
+                console.log(data);
+            })
+        ;
+
+    });
+
+
+    $('.btn-edit-class').on('click', function(){
+        var class_id = $( this ).attr('data_class');
+
+        $.post( "<?= $this->url('forums/css_generator', ['action' => 'ajaxgetclass', 'id_forum'=>$this->id_forum]) ?>", { 'id_class': class_id})
+            .done(function(data) {
+                var instance = data.data.class;
+                $("#modal-class").modal('show');
+                $("#modal-class-title").text(data.message);
+                $("#class-id").val(instance.id);
+                $("#class-name").val(instance.name);
+                $("#class-type").val(instance.type);
+            })
+            .fail(function(data){
+                console.log(data.data.class);
+            })
+        ;
+    });
+
+    $('.btn-edit-attribute').on('click', function(){
+        var id = $( this ).attr('data_attr');
+        var class_id = $( this ).attr('data_class');
+
+        $.post( "<?= $this->url('forums/css_generator', ['action' => 'ajaxgetattribute', 'id_forum'=>$this->id_forum]) ?>", { 'id_attribute': id})
+            .done(function(data) {
+                var instance = data.data.class;
+                $("#modal-attr").modal('show');
+                $("#modal-attr-title").text(data.message);
+                $("#attr-id").val(instance.id);
+                $("#attr-name").val(instance.name);
+                $("#attr-attribute").val(instance.attribute);
+                $("#attr-addendum").val(instance.addendum);
+                $("#attr-class-id").val(class_id);
+            })
+            .fail(function(data){
+                console.log(data.data.class);
+            })
+        ;
+    });
+
+
+    $('.btn-new-attribute').on('click', function(){
+        var class_id = $( this ).attr('data_class');
+
+        $( "#modal-attr" ).modal('show');
+        $( "#modal-attr-title" ).text("Nouvel Attribut");
+
+        $( "#attr-id" ).val('');
+        $( "#attr-name" ).val('');
+        $( "#attr-attribute" ).val('');
+        $( "#attr-addendum" ).val('');
+        $( "#attr-class-id" ).val(class_id);
+
+    });
+</script>
